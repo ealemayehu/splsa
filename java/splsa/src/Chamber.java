@@ -1,4 +1,4 @@
 public enum Chamber
 {
-	Senate, House
+  Senate, House
 }

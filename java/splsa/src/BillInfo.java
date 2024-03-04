@@ -5,294 +5,294 @@ import org.json.JSONObject;
 
 public class BillInfo implements Comparable<BillInfo>
 {
-	private Chamber chamber;
-	private int yesVoteCount;
-	private int noVoteCount;
-	private int abstainCount;
-	private int number;
-	private int govApiId;
-	private Date voteDate;
-	private String displayNumber;
-	private int congress;
-	private String govApiUrl;
-	private int id;
-	private String currentStatus;
-	private String gpoUrl;
-	private String category;
-	private String title;
-	private String titleWithoutNumber;
-	private String billType;
-	private String billTypeLabel;
-	private String voteType;
+  private Chamber chamber;
+  private int yesVoteCount;
+  private int noVoteCount;
+  private int abstainCount;
+  private int number;
+  private int govApiId;
+  private Date voteDate;
+  private String displayNumber;
+  private int congress;
+  private String govApiUrl;
+  private int id;
+  private String currentStatus;
+  private String gpoUrl;
+  private String category;
+  private String title;
+  private String titleWithoutNumber;
+  private String billType;
+  private String billTypeLabel;
+  private String voteType;
 
-	private static int nextId = 1;
+  private static int nextId = 1;
 
-	public BillInfo()
-	{
-		this.id = nextId++;
-	}
+  public BillInfo()
+  {
+    this.id = nextId++;
+  }
 
-	public BillInfo(int id)
-	{
-		this.id = id;
-	}
-	
-	public static void setNextId(int nextId)
-	{
-		BillInfo.nextId = nextId;
-	}
+  public BillInfo(int id)
+  {
+    this.id = id;
+  }
 
-	public Chamber getChamber()
-	{
-		return chamber;
-	}
+  public static void setNextId(int nextId)
+  {
+    BillInfo.nextId = nextId;
+  }
 
-	public void setChamber(Chamber chamber)
-	{
-		this.chamber = chamber;
-	}
+  public Chamber getChamber()
+  {
+    return chamber;
+  }
 
-	public int getYesVoteCount()
-	{
-		return yesVoteCount;
-	}
+  public void setChamber(Chamber chamber)
+  {
+    this.chamber = chamber;
+  }
 
-	public void setYesVoteCount(int yesVoteCount)
-	{
-		this.yesVoteCount = yesVoteCount;
-	}
+  public int getYesVoteCount()
+  {
+    return yesVoteCount;
+  }
 
-	public int getNoVoteCount()
-	{
-		return noVoteCount;
-	}
+  public void setYesVoteCount(int yesVoteCount)
+  {
+    this.yesVoteCount = yesVoteCount;
+  }
 
-	public void setNoVoteCount(int noVoteCount)
-	{
-		this.noVoteCount = noVoteCount;
-	}
+  public int getNoVoteCount()
+  {
+    return noVoteCount;
+  }
 
-	public int getAbstainCount()
-	{
-		return abstainCount;
-	}
+  public void setNoVoteCount(int noVoteCount)
+  {
+    this.noVoteCount = noVoteCount;
+  }
 
-	public void setAbstainCount(int abstainCount)
-	{
-		this.abstainCount = abstainCount;
-	}
+  public int getAbstainCount()
+  {
+    return abstainCount;
+  }
 
-	public int getNumber()
-	{
-		return number;
-	}
+  public void setAbstainCount(int abstainCount)
+  {
+    this.abstainCount = abstainCount;
+  }
 
-	public void setNumber(int number)
-	{
-		this.number = number;
-	}
+  public int getNumber()
+  {
+    return number;
+  }
 
-	public int getGovApiId()
-	{
-		return govApiId;
-	}
+  public void setNumber(int number)
+  {
+    this.number = number;
+  }
 
-	public void setGovApiId(int govApiId)
-	{
-		this.govApiId = govApiId;
-	}
+  public int getGovApiId()
+  {
+    return govApiId;
+  }
 
-	public Date getVoteDate()
-	{
-		return voteDate;
-	}
+  public void setGovApiId(int govApiId)
+  {
+    this.govApiId = govApiId;
+  }
 
-	public void setVoteDate(Date voteDate)
-	{
-		this.voteDate = voteDate;
-	}
+  public Date getVoteDate()
+  {
+    return voteDate;
+  }
 
-	public String getDisplayNumber()
-	{
-		return displayNumber;
-	}
+  public void setVoteDate(Date voteDate)
+  {
+    this.voteDate = voteDate;
+  }
 
-	public void setDisplayNumber(String displayNumber)
-	{
-		this.displayNumber = displayNumber;
-	}
+  public String getDisplayNumber()
+  {
+    return displayNumber;
+  }
 
-	public int getCongress()
-	{
-		return congress;
-	}
+  public void setDisplayNumber(String displayNumber)
+  {
+    this.displayNumber = displayNumber;
+  }
 
-	public void setCongress(int congress)
-	{
-		this.congress = congress;
-	}
+  public int getCongress()
+  {
+    return congress;
+  }
 
-	public String getGovApiUrl()
-	{
-		return govApiUrl;
-	}
+  public void setCongress(int congress)
+  {
+    this.congress = congress;
+  }
 
-	public void setGovApiUrl(String govApiUrl)
-	{
-		this.govApiUrl = govApiUrl;
-	}
+  public String getGovApiUrl()
+  {
+    return govApiUrl;
+  }
 
-	public String getGpoUrl()
-	{
-		return gpoUrl;
-	}
+  public void setGovApiUrl(String govApiUrl)
+  {
+    this.govApiUrl = govApiUrl;
+  }
 
-	public void setGpoUrl(String gpoUrl)
-	{
-		this.gpoUrl = gpoUrl;
-	}
+  public String getGpoUrl()
+  {
+    return gpoUrl;
+  }
 
-	public JSONObject toJson() throws JSONException
-	{
-		JSONObject json = new JSONObject(this);
+  public void setGpoUrl(String gpoUrl)
+  {
+    this.gpoUrl = gpoUrl;
+  }
 
-		json.put("chamber", chamber.name());
-		return json;
-	}
+  public JSONObject toJson() throws JSONException
+  {
+    JSONObject json = new JSONObject(this);
 
-	public int getId()
-	{
-		return id;
-	}
+    json.put("chamber", chamber.name());
+    return json;
+  }
 
-	public String getCurrentStatus()
-	{
-		return currentStatus;
-	}
+  public int getId()
+  {
+    return id;
+  }
 
-	public void setCurrentStatus(String currentStatus)
-	{
-		this.currentStatus = currentStatus;
-	}
+  public String getCurrentStatus()
+  {
+    return currentStatus;
+  }
 
-	public String getCategory()
-	{
-		return category;
-	}
+  public void setCurrentStatus(String currentStatus)
+  {
+    this.currentStatus = currentStatus;
+  }
 
-	public void setCategory(String category)
-	{
-		this.category = category;
-	}
+  public String getCategory()
+  {
+    return category;
+  }
 
-	@SuppressWarnings("deprecation")
-	public static BillInfo fromJson(JSONObject json) throws JSONException
-	{
-		BillInfo billInfo = new BillInfo(json.getInt("id"));
+  public void setCategory(String category)
+  {
+    this.category = category;
+  }
 
-		billInfo.setNumber(json.getInt("number"));
-		billInfo.setCongress(json.getInt("congress"));
-		billInfo.setYesVoteCount(json.getInt("yesVoteCount"));
-		billInfo.setDisplayNumber(json.getString("displayNumber"));
-		billInfo.setGovApiUrl(json.getString("govApiUrl"));
-		billInfo.setChamber(Chamber.valueOf(Chamber.class,
-		      json.getString("chamber")));
-		billInfo.setGovApiId(json.getInt("govApiId"));
-		billInfo.setVoteDate(new Date(Date.parse(json.getString("voteDate"))));
-		billInfo.setNoVoteCount(json.getInt("noVoteCount"));
-		billInfo.setAbstainCount(json.getInt("abstainCount"));
-		billInfo.setCurrentStatus(json.getString("currentStatus"));
-		billInfo.setGpoUrl(json.optString("gpoUrl"));
-		billInfo.setCategory(json.getString("category"));
-		billInfo.setTitle(json.optString("title"));
-		billInfo.setTitleWithoutNumber(json.optString("titleWithoutNumber"));
-		billInfo.setBillType(json.optString("billType"));
-		billInfo.setBillTypeLabel(json.optString("billTypeLabel"));
-		billInfo.setVoteType(json.optString("voteType"));
-		return billInfo;
-	}
+  @SuppressWarnings("deprecation")
+  public static BillInfo fromJson(JSONObject json) throws JSONException
+  {
+    BillInfo billInfo = new BillInfo(json.getInt("id"));
 
-	public String getTitle()
-	{
-		return title;
-	}
+    billInfo.setNumber(json.getInt("number"));
+    billInfo.setCongress(json.getInt("congress"));
+    billInfo.setYesVoteCount(json.getInt("yesVoteCount"));
+    billInfo.setDisplayNumber(json.getString("displayNumber"));
+    billInfo.setGovApiUrl(json.getString("govApiUrl"));
+    billInfo
+        .setChamber(Chamber.valueOf(Chamber.class, json.getString("chamber")));
+    billInfo.setGovApiId(json.getInt("govApiId"));
+    billInfo.setVoteDate(new Date(Date.parse(json.getString("voteDate"))));
+    billInfo.setNoVoteCount(json.getInt("noVoteCount"));
+    billInfo.setAbstainCount(json.getInt("abstainCount"));
+    billInfo.setCurrentStatus(json.getString("currentStatus"));
+    billInfo.setGpoUrl(json.optString("gpoUrl"));
+    billInfo.setCategory(json.getString("category"));
+    billInfo.setTitle(json.optString("title"));
+    billInfo.setTitleWithoutNumber(json.optString("titleWithoutNumber"));
+    billInfo.setBillType(json.optString("billType"));
+    billInfo.setBillTypeLabel(json.optString("billTypeLabel"));
+    billInfo.setVoteType(json.optString("voteType"));
+    return billInfo;
+  }
 
-	public void setTitle(String title)
-	{
-		this.title = title;
-	}
+  public String getTitle()
+  {
+    return title;
+  }
 
-	public String getTitleWithoutNumber()
-	{
-		return titleWithoutNumber;
-	}
+  public void setTitle(String title)
+  {
+    this.title = title;
+  }
 
-	public void setTitleWithoutNumber(String titleWithoutNumber)
-	{
-		this.titleWithoutNumber = titleWithoutNumber;
-	}
+  public String getTitleWithoutNumber()
+  {
+    return titleWithoutNumber;
+  }
 
-	public String getBillType()
-	{
-		return billType;
-	}
+  public void setTitleWithoutNumber(String titleWithoutNumber)
+  {
+    this.titleWithoutNumber = titleWithoutNumber;
+  }
 
-	public void setBillType(String billType)
-	{
-		this.billType = billType;
-	}
+  public String getBillType()
+  {
+    return billType;
+  }
 
-	public String getBillTypeLabel()
-	{
-		return billTypeLabel;
-	}
+  public void setBillType(String billType)
+  {
+    this.billType = billType;
+  }
 
-	public void setBillTypeLabel(String billTypeLabel)
-	{
-		this.billTypeLabel = billTypeLabel;
-	}
+  public String getBillTypeLabel()
+  {
+    return billTypeLabel;
+  }
 
-	public String getVoteType()
-	{
-		return voteType;
-	}
+  public void setBillTypeLabel(String billTypeLabel)
+  {
+    this.billTypeLabel = billTypeLabel;
+  }
 
-	public void setVoteType(String voteType)
-	{
-		this.voteType = voteType;
-	}
+  public String getVoteType()
+  {
+    return voteType;
+  }
 
-	@Override
-	public int hashCode()
-	{
-		return congress + displayNumber.hashCode();
-	}
+  public void setVoteType(String voteType)
+  {
+    this.voteType = voteType;
+  }
 
-	@Override
-	public boolean equals(Object object)
-	{
-		if (object == null)
-			return false;
+  @Override
+  public int hashCode()
+  {
+    return congress + displayNumber.hashCode();
+  }
 
-		if (object instanceof BillInfo)
-		{
-			BillInfo billInfo = (BillInfo) object;
+  @Override
+  public boolean equals(Object object)
+  {
+    if(object == null)
+      return false;
 
-			return congress == billInfo.congress
-			      && displayNumber.equals(billInfo.displayNumber);
-		}
+    if(object instanceof BillInfo)
+    {
+      BillInfo billInfo = (BillInfo) object;
 
-		return false;
-	}
+      return congress == billInfo.congress
+          && displayNumber.equals(billInfo.displayNumber);
+    }
 
-	@Override
-	public int compareTo(BillInfo billInfo)
-	{
-		int comparison = congress - billInfo.congress;
+    return false;
+  }
 
-		if (comparison != 0)
-			return comparison;
+  @Override
+  public int compareTo(BillInfo billInfo)
+  {
+    int comparison = congress - billInfo.congress;
 
-		return displayNumber.compareTo(billInfo.displayNumber);
-	}
+    if(comparison != 0)
+      return comparison;
+
+    return displayNumber.compareTo(billInfo.displayNumber);
+  }
 }

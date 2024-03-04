@@ -18,269 +18,271 @@ import org.json.JSONObject;
 
 public class Importer
 {
-	private final static int[] CONGRESS = new int[]
-	{100, 101, 102, 103, 104, 105, 106, 107, 109, 110, 111, 112, 113, 114};
-	private final static int LIMIT = 600;
-	private final static String BASE_VOTE_API_URL = "https://www.govtrack.us/api/v2/vote";
-	private static Pattern gpoUrlPattern = Pattern
-	      .compile("http\\:\\/\\/www\\.gpo\\.gov\\/fdsys\\/pkg([^\\.])+\\.");
-	private static SimpleDateFormat dateFormat = new SimpleDateFormat(
-	      "yyyy-MM-dd'T'HH:mm:ss");
+  private final static int[] CONGRESS = new int[]
+  { 100, 101, 102, 103, 104, 105, 106, 107, 109, 110, 111, 112, 113, 114 };
+  private final static int LIMIT = 600;
+  private final static String BASE_VOTE_API_URL = "https://www.govtrack.us/api/v2/vote";
+  private static Pattern gpoUrlPattern = Pattern
+      .compile("http\\:\\/\\/www\\.gpo\\.gov\\/fdsys\\/pkg([^\\.])+\\.");
+  private static SimpleDateFormat dateFormat = new SimpleDateFormat(
+      "yyyy-MM-dd'T'HH:mm:ss");
 
-	public static void downloadBillInfos() throws IOException, JSONException,
-	      ParseException
-	{
-		Collection<BillInfo> billInfos = new TreeSet<BillInfo>();
-		Map<Integer, Integer> billNumberIdMap = BillPersister
-		      .getBillNumberIdMap();
+  public static void downloadBillInfos()
+      throws IOException, JSONException, ParseException
+  {
+    Collection<BillInfo> billInfos = new TreeSet<BillInfo>();
+    Map<Integer, Integer> billNumberIdMap = BillPersister.getBillNumberIdMap();
 
-		BillInfo.setNextId(BillPersister.getMaxBillId() + 1);
+    BillInfo.setNextId(BillPersister.getMaxBillId() + 1);
 
-		populateBillInfos(billInfos, billNumberIdMap, LIMIT);
-		BillPersister.saveBillInfos(billInfos);
-	}
+    populateBillInfos(billInfos, billNumberIdMap, LIMIT);
+    BillPersister.saveBillInfos(billInfos);
+  }
 
-	public static void downloadBills() throws IOException, JSONException
-	{
-		Collection<BillInfo> billInfos = BillPersister.getBillInfos();
-		int index = 1;
-		int totalCount = 0;
-		int downloadCount = 0;
+  public static void downloadBills() throws IOException, JSONException
+  {
+    Collection<BillInfo> billInfos = BillPersister.getBillInfos();
+    int index = 1;
+    int totalCount = 0;
+    int downloadCount = 0;
 
-		for (BillInfo billInfo : billInfos)
-		{
-			totalCount++;
-			
-			if(downloadBill(billInfo))
-				downloadCount++;
+    for (BillInfo billInfo : billInfos)
+    {
+      totalCount++;
 
-			if(index % 10 == 0)
-				System.out.println("Downloaded " + downloadCount + " bills out of " + totalCount);
+      if(downloadBill(billInfo))
+        downloadCount++;
 
-			index++;
-		}
-		
-		System.out.println("Total bills attempted to download: " + totalCount + ", downloaded: " + downloadCount);
-	}
+      if(index % 10 == 0)
+        System.out.println(
+            "Downloaded " + downloadCount + " bills out of " + totalCount);
 
-	public static boolean downloadBill(BillInfo billInfo) throws IOException
-	{
-		if(BillPersister.hasBill(billInfo.getId()))
-			return false;
+      index++;
+    }
 
-		String content = null;
-		
-		try
-		{
-			String url = billInfo.getGpoUrl();
+    System.out.println("Total bills attempted to download: " + totalCount
+        + ", downloaded: " + downloadCount);
+  }
 
-			assert (url != null);
-			assert (!url.isEmpty());
-			
-			url = url.replace("http://", "https://");
-			
-			content = getContentText(url);
-			
-			assert (content != null);
-			assert (!content.isEmpty());
-		}
-		catch (Throwable e)
-		{
-			e.printStackTrace();
-			System.err.println("Unable to download the bill for bill id = "
-			      + billInfo.getId());
-			return false;
-		}
+  public static boolean downloadBill(BillInfo billInfo) throws IOException
+  {
+    if(BillPersister.hasBill(billInfo.getId()))
+      return false;
 
-		content = content.replace("<html><body><pre>", "");
-		content = content.replace("</pre></body></html>", "");
-		BillPersister.saveBill(billInfo.getId(), content);
-		return true;
-	}
+    String content = null;
 
-	public static void populateGpoUrls() throws IOException, JSONException
-	{
-		Collection<BillInfo> billInfos = BillPersister.getBillInfos();
-		int index = 1;
+    try
+    {
+      String url = billInfo.getGpoUrl();
 
-		for (BillInfo billInfo : billInfos)
-		{
-			try
-			{
-				populateGpoUrl(billInfo);
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-				System.out.println("Unable to get the GPO URL for bill id = "
-				      + billInfo.getId());
-			}
+      assert (url != null);
+      assert (!url.isEmpty());
 
-			BillPersister.saveBillInfo(billInfo);
+      url = url.replace("http://", "https://");
 
-			if(index % 10 == 0)
-				System.out.println("Populated " + index + " GPO urls.");
+      content = getContentText(url);
 
-			index++;
-		}
-	}
+      assert (content != null);
+      assert (!content.isEmpty());
+    }
+    catch (Throwable e)
+    {
+      e.printStackTrace();
+      System.err.println(
+          "Unable to download the bill for bill id = " + billInfo.getId());
+      return false;
+    }
 
-	public static void populateBillInfos(Collection<BillInfo> billInfos,
-	      Map<Integer, Integer> billNumberIdMap, int limit) throws IOException,
-	      JSONException, ParseException
-	{
-		for (int congress : CONGRESS)
-			populateBillInfos(billInfos, billNumberIdMap, congress, limit);
-	}
+    content = content.replace("<html><body><pre>", "");
+    content = content.replace("</pre></body></html>", "");
+    BillPersister.saveBill(billInfo.getId(), content);
+    return true;
+  }
 
-	public static void populateBillInfos(Collection<BillInfo> billInfos,
-	      Map<Integer, Integer> billNumberIdMap, int congress, int limit)
-	      throws IOException, JSONException, ParseException
-	{
-		PageInfo pageInfo = null;
-		int offset = -1 * limit;
+  public static void populateGpoUrls() throws IOException, JSONException
+  {
+    Collection<BillInfo> billInfos = BillPersister.getBillInfos();
+    int index = 1;
 
-		do
-		{
-			offset += limit;
-			pageInfo = populateBillInfos(billInfos, billNumberIdMap, congress,
-			      offset, limit);
-		}
-		while (offset + pageInfo.getCount() < pageInfo.getTotal());
-	}
+    for (BillInfo billInfo : billInfos)
+    {
+      try
+      {
+        populateGpoUrl(billInfo);
+      }
+      catch (Exception e)
+      {
+        e.printStackTrace();
+        System.out.println(
+            "Unable to get the GPO URL for bill id = " + billInfo.getId());
+      }
 
-	public static PageInfo populateBillInfos(Collection<BillInfo> billInfos,
-	      Map<Integer, Integer> billNumberIdMap, int congress, int offset,
-	      int limit) throws IOException, JSONException, ParseException
-	{
-		String apiUrl = BASE_VOTE_API_URL + "?congress=" + congress + "&offset="
-		      + offset + "&limit=" + limit + "&order_by=created";
-		String content = getContentText(apiUrl);
-		JSONObject main = new JSONObject(content);
-		JSONArray votes = main.getJSONArray("objects");
-		int i;
-		int added = 0;
+      BillPersister.saveBillInfo(billInfo);
 
-		for (i = 0; i < votes.length(); i++)
-		{
-			JSONObject vote = votes.getJSONObject(i);
+      if(index % 10 == 0)
+        System.out.println("Populated " + index + " GPO urls.");
 
-			if(!vote.has("related_bill") || vote.isNull("related_bill"))
-				continue;
+      index++;
+    }
+  }
 
-			JSONObject relatedBill = vote.getJSONObject("related_bill");
-			int number = relatedBill.getInt("number");
-			Integer id = billNumberIdMap.get(number);
-			BillInfo billInfo;
-			
-			if(id != null)
-				billInfo = new BillInfo(id);
-			else
-				billInfo = new BillInfo();
+  public static void populateBillInfos(Collection<BillInfo> billInfos,
+      Map<Integer, Integer> billNumberIdMap, int limit)
+      throws IOException, JSONException, ParseException
+  {
+    for (int congress : CONGRESS)
+      populateBillInfos(billInfos, billNumberIdMap, congress, limit);
+  }
 
-			billInfo.setGovApiId(vote.getInt("id"));
-			billInfo.setVoteDate(dateFormat.parse(vote.getString("created")));
-			billInfo.setNumber(number);
-			billInfo.setCurrentStatus(relatedBill.getString("current_status"));
-			billInfo.setDisplayNumber(relatedBill.getString("display_number"));
-			billInfo.setNoVoteCount(vote.getInt("total_minus"));
-			billInfo.setYesVoteCount(vote.getInt("total_plus"));
-			billInfo.setAbstainCount(vote.getInt("total_other"));
-			billInfo.setCategory(vote.getString("category"));
-			billInfo.setGovApiUrl(relatedBill.getString("link"));
-			billInfo.setBillType(relatedBill.getString("bill_type"));
-			billInfo.setBillTypeLabel(relatedBill.getString("bill_type_label"));
-			billInfo.setTitle(relatedBill.getString("title"));
-			billInfo.setTitleWithoutNumber(relatedBill
-			      .getString("title_without_number"));
-			billInfo.setVoteType(relatedBill.optString("vote_type"));
-			billInfo.setCongress(congress);
+  public static void populateBillInfos(Collection<BillInfo> billInfos,
+      Map<Integer, Integer> billNumberIdMap, int congress, int limit)
+      throws IOException, JSONException, ParseException
+  {
+    PageInfo pageInfo = null;
+    int offset = -1 * limit;
 
-			if("house".equals(vote.get("chamber")))
-				billInfo.setChamber(Chamber.House);
-			else
-				billInfo.setChamber(Chamber.Senate);
+    do
+    {
+      offset += limit;
+      pageInfo = populateBillInfos(billInfos, billNumberIdMap, congress, offset,
+          limit);
+    }
+    while (offset + pageInfo.getCount() < pageInfo.getTotal());
+  }
 
-			billInfos.remove(billInfo);
-			billInfos.add(billInfo);
-			added++;
-		}
+  public static PageInfo populateBillInfos(Collection<BillInfo> billInfos,
+      Map<Integer, Integer> billNumberIdMap, int congress, int offset,
+      int limit) throws IOException, JSONException, ParseException
+  {
+    String apiUrl = BASE_VOTE_API_URL + "?congress=" + congress + "&offset="
+        + offset + "&limit=" + limit + "&order_by=created";
+    String content = getContentText(apiUrl);
+    JSONObject main = new JSONObject(content);
+    JSONArray votes = main.getJSONArray("objects");
+    int i;
+    int added = 0;
 
-		JSONObject meta = main.getJSONObject("meta");
-		int total = meta.getInt("total_count");
+    for (i = 0; i < votes.length(); i++)
+    {
+      JSONObject vote = votes.getJSONObject(i);
 
-		System.out.println("Populated bills (congress = " + congress
-		      + ", offset = " + offset + ", limit = " + limit + ", added = "
-		      + added + ", total = " + total + ").");
-		return new PageInfo(i, total);
-	}
+      if(!vote.has("related_bill") || vote.isNull("related_bill"))
+        continue;
 
-	public static void populateGpoUrl(BillInfo billInfo) throws IOException
-	{
-		String gpoUrl = billInfo.getGpoUrl();
-		
-		if(gpoUrl != null && !gpoUrl.isEmpty())
-			return;
-			
-		String govApiPage = getContentText(billInfo.getGovApiUrl() + "/text");
-		Matcher match = gpoUrlPattern.matcher(govApiPage);
+      JSONObject relatedBill = vote.getJSONObject("related_bill");
+      int number = relatedBill.getInt("number");
+      Integer id = billNumberIdMap.get(number);
+      BillInfo billInfo;
 
-		if(match.find())
-		{
-			String url = match.group().replace("pdf", "html") + "htm";
+      if(id != null)
+        billInfo = new BillInfo(id);
+      else
+        billInfo = new BillInfo();
 
-			billInfo.setGpoUrl(url);
-		}
-	}
+      billInfo.setGovApiId(vote.getInt("id"));
+      billInfo.setVoteDate(dateFormat.parse(vote.getString("created")));
+      billInfo.setNumber(number);
+      billInfo.setCurrentStatus(relatedBill.getString("current_status"));
+      billInfo.setDisplayNumber(relatedBill.getString("display_number"));
+      billInfo.setNoVoteCount(vote.getInt("total_minus"));
+      billInfo.setYesVoteCount(vote.getInt("total_plus"));
+      billInfo.setAbstainCount(vote.getInt("total_other"));
+      billInfo.setCategory(vote.getString("category"));
+      billInfo.setGovApiUrl(relatedBill.getString("link"));
+      billInfo.setBillType(relatedBill.getString("bill_type"));
+      billInfo.setBillTypeLabel(relatedBill.getString("bill_type_label"));
+      billInfo.setTitle(relatedBill.getString("title"));
+      billInfo
+          .setTitleWithoutNumber(relatedBill.getString("title_without_number"));
+      billInfo.setVoteType(relatedBill.optString("vote_type"));
+      billInfo.setCongress(congress);
 
-	public static String getContentText(String link) throws IOException
-	{
-		HttpsURLConnection connection = null;
-		InputStream stream = null;
-		String content = null;
+      if("house".equals(vote.get("chamber")))
+        billInfo.setChamber(Chamber.House);
+      else
+        billInfo.setChamber(Chamber.Senate);
 
-		try
-		{
-			URL url = new URL(link);
+      billInfos.remove(billInfo);
+      billInfos.add(billInfo);
+      added++;
+    }
 
-			connection = (HttpsURLConnection) url.openConnection();
-         connection.setConnectTimeout(20000);
-         connection.setReadTimeout(20000);
-			stream = connection.getInputStream();
-			content = IOUtils.toString(stream, connection.getContentEncoding());
-			
-			if(content.isEmpty())
-			{
-				System.err.println("Code: " + connection.getResponseCode() + ", Length: " + connection.getContentLength());
-			}
-		}
-		finally
-		{
-			if(stream != null)
-			{
-				try
-				{
-					stream.close();
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-			}
+    JSONObject meta = main.getJSONObject("meta");
+    int total = meta.getInt("total_count");
 
-			if(connection != null)
-			{
-				try
-				{
-					connection.disconnect();
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-			}
-		}
+    System.out.println("Populated bills (congress = " + congress + ", offset = "
+        + offset + ", limit = " + limit + ", added = " + added + ", total = "
+        + total + ").");
+    return new PageInfo(i, total);
+  }
 
-		return content;
-	}
+  public static void populateGpoUrl(BillInfo billInfo) throws IOException
+  {
+    String gpoUrl = billInfo.getGpoUrl();
+
+    if(gpoUrl != null && !gpoUrl.isEmpty())
+      return;
+
+    String govApiPage = getContentText(billInfo.getGovApiUrl() + "/text");
+    Matcher match = gpoUrlPattern.matcher(govApiPage);
+
+    if(match.find())
+    {
+      String url = match.group().replace("pdf", "html") + "htm";
+
+      billInfo.setGpoUrl(url);
+    }
+  }
+
+  public static String getContentText(String link) throws IOException
+  {
+    HttpsURLConnection connection = null;
+    InputStream stream = null;
+    String content = null;
+
+    try
+    {
+      URL url = new URL(link);
+
+      connection = (HttpsURLConnection) url.openConnection();
+      connection.setConnectTimeout(20000);
+      connection.setReadTimeout(20000);
+      stream = connection.getInputStream();
+      content = IOUtils.toString(stream, connection.getContentEncoding());
+
+      if(content.isEmpty())
+      {
+        System.err.println("Code: " + connection.getResponseCode()
+            + ", Length: " + connection.getContentLength());
+      }
+    }
+    finally
+    {
+      if(stream != null)
+      {
+        try
+        {
+          stream.close();
+        }
+        catch (Exception e)
+        {
+          e.printStackTrace();
+        }
+      }
+
+      if(connection != null)
+      {
+        try
+        {
+          connection.disconnect();
+        }
+        catch (Exception e)
+        {
+          e.printStackTrace();
+        }
+      }
+    }
+
+    return content;
+  }
 }

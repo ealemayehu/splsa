@@ -1,25 +1,25 @@
 public class WordInfo
 {
-	private int id;
-	private int count;
-	
-	public int getId()
-	{
-		return id;
-	}
+  private int id;
+  private int count;
 
-	public void setId(int id)
-	{
-		this.id = id;
-	}
+  public int getId()
+  {
+    return id;
+  }
 
-	public int getCount()
-	{
-		return count;
-	}
-	
-	public void setCount(int count)
-	{
-		this.count = count;
-	}
+  public void setId(int id)
+  {
+    this.id = id;
+  }
+
+  public int getCount()
+  {
+    return count;
+  }
+
+  public void setCount(int count)
+  {
+    this.count = count;
+  }
 }
