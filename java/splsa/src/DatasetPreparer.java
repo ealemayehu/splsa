@@ -229,9 +229,9 @@ public class DatasetPreparer
 
 		System.out.println("Created vocabulary.");
 
-		createPlsaDataset("training", vocabularyMap);
-		createPlsaDataset("crossValidation", vocabularyMap);
-		createPlsaDataset("testing", vocabularyMap);
+		createSplsaDataset("training", vocabularyMap);
+		createSplsaDataset("crossValidation", vocabularyMap);
+		createSplsaDataset("testing", vocabularyMap);
 
 		createSldaDataset("training", vocabularyMap);
 		createSldaDataset("crossValidation", vocabularyMap);
@@ -240,7 +240,7 @@ public class DatasetPreparer
 		System.out.println("Created Model datasets.");
 	}
 
-	public static void createPlsaDataset(String purpose,
+	public static void createSplsaDataset(String purpose,
 	      Map<String, Integer> vocabularyMap) throws IOException
 	{
 		createWordCountDataset(purpose, "Lct", vocabularyMap,

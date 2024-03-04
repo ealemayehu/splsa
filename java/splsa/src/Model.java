@@ -227,9 +227,9 @@ public class Model
 		log("Starting model...");
 
 		List<List<WordInfo>> trainingDocuments = DatasetPreparer
-		      .getWordCountsByBill("trainingPlsaDataset.txt");
+		      .getWordCountsByBill("trainingSplsaDataset.txt");
 		List<List<WordInfo>> crossValidationDocuments = DatasetPreparer
-		      .getWordCountsByBill("crossValidationPlsaDataset.txt");
+		      .getWordCountsByBill("crossValidationSplsaDataset.txt");
 
 		Map<String, Integer> vocabulary = DatasetPreparer.getVocabularyDataset();
 

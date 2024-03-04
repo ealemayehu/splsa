@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
     <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-        <listEntry value="/plsa/src/Main.java"/>
+        <listEntry value="/splsa/src/Main.java"/>
     </listAttribute>
     <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
         <listEntry value="1"/>
@@ -9,6 +9,6 @@
     <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
     <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="Main"/>
     <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-runModel"/>
-    <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="plsa"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="splsa"/>
     <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dbill.persistance.directory=../../data/bills -Ddataset.persistance.directory=../../data/dataset -Xmx5096m -ea -Dmodel.persistance.directory=../../data/model -Dreport.directory=&quot;../../paper"/>
 </launchConfiguration>
