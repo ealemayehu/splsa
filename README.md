@@ -24,12 +24,12 @@ java -jar main.jar -runModel -k K -lambda λ -eta η
 
 Files with the following formats are generated as output in the `data/model` folder of this project
 
-- `theta_{train|cv|test}_lλ_eη_kK_{initial|final}.txt`: Stores the ϴ matrix for the training (train), cross validation (cv) or test (test) datasets initially prior to training (initial) or after training (final).
-- `beta_{train|cv|test}_lλ_eη_kK_{initial|final}.txt`: Stores the β matrix for the training (train), cross validation (cv) or test (test) datasets initially prior to training (initial) or after training (final).
-- `v_{train|cv|test}_lλ_eη_kK_{initial|final}.txt`: Stores the v vector for the training (train), cross validation (cv) or test (test) datasets initially prior to training (initial) or after training (final).
-- `perplexity_{train|cv|test}_lλ_eη_kK.txt`: Stores the perplexity values for the training (train), cross validation (cv) or test (test) datasets on a per iteration basis.
-- `predicted_rmse_{cv|test}_lλ_eη_kK.txt`: Stores the RMSE for the predicted controversy scores for the cross validation (cv) or test (test) datasets.
-- `top_words_{train|cv|test}_lλ_eη_kK.txt`: The top words on a per-latent topic basis for the training (train), cross validation (cv) or test (test) datasets.
+- `theta_{train|cv|test}_lλ_eη_kK_{initial|final}.txt`: Stores the ϴ matrix for the training (train), cross validation (cv) or testing (test) datasets initially prior to training (initial) or after training (final).
+- `beta_{train|cv|test}_lλ_eη_kK_{initial|final}.txt`: Stores the β matrix for the training (train), cross validation (cv) or testing (test) datasets initially prior to training (initial) or after training (final).
+- `v_{train|cv|test}_lλ_eη_kK_{initial|final}.txt`: Stores the v vector for the training (train), cross validation (cv) or testing (test) datasets initially prior to training (initial) or after training (final).
+- `perplexity_{train|cv|test}_lλ_eη_kK.txt`: Stores the perplexity values for the training (train), cross validation (cv) or testing (test) datasets on a per iteration basis.
+- `predicted_rmse_{cv|test}_lλ_eη_kK.txt`: Stores the RMSE for the predicted controversy scores for the cross validation (cv) or testing (test) datasets.
+- `top_words_{train|cv|test}_lλ_eη_kK.txt`: The top words on a per-latent topic basis for the training (train), cross validation (cv) or testing (test) datasets.
 
 ## Run Baseline
 
