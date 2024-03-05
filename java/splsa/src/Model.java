@@ -15,13 +15,6 @@ import weka.core.matrix.Matrix;
 
 public class Model
 {
-  private static final double[] LAMBDAS = new double[]
-  { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 };
-  private static final int[] KS = new int[]
-  { 10 };
-  private static final double[] ETAS = new double[]
-  { 1 };
-  private static boolean SINGLE_RUN = false;
   private static final int MAX_ITERATIONS = 100;
   private static final int MAX_THETA_ITERATIONS = 20;
   private static final int MAX_V_ITERATIONS = 100;
@@ -223,7 +216,7 @@ public class Model
     log("Model completed.");
   }
 
-  public static void run() throws IOException, JSONException
+  public static void run(int[] ks, double[] lambdas, double[] etas) throws IOException, JSONException
   {
     log("Starting model...");
 
@@ -231,6 +224,8 @@ public class Model
         .getWordCountsByBill("trainingSplsaDataset.txt");
     List<List<WordInfo>> crossValidationDocuments = DatasetPreparer
         .getWordCountsByBill("crossValidationSplsaDataset.txt");
+    List<List<WordInfo>> testingDocuments = DatasetPreparer
+        .getWordCountsByBill("testingSplsaDataset.txt");
 
     Map<String, Integer> vocabulary = DatasetPreparer.getVocabularyDataset();
 
@@ -238,14 +233,25 @@ public class Model
         .getControversyScores("trainingDataset.txt");
     List<Double> crossValidationControversyScores = DatasetPreparer
         .getControversyScores("crossValidationDataset.txt");
+    List<Double> testingControversyScores = DatasetPreparer
+        .getControversyScores("testingDataset.txt");
 
     log("Loaded datasets");
+    
+    if (ks == null || ks.length == 0)
+      throw new RuntimeException("K values need to be specified");
 
-    for (int k : KS)
+    if (lambdas == null || lambdas.length == 0)
+      throw new RuntimeException("Lambda values need to be specified");
+    
+    if (etas == null || etas.length == 0)
+      throw new RuntimeException("Eta values need to be specified");
+    
+    for (int k : ks)
     {
-      for (double eta : ETAS)
+      for (double eta : etas)
       {
-        for (double lambda : LAMBDAS)
+        for (double lambda : lambdas)
         {
           Model trainingModel = new Model(trainingDocuments, vocabulary,
               trainingControversyScores, lambda, k, eta, null, null,
@@ -254,17 +260,25 @@ public class Model
           Model crossValidationModel = new Model(crossValidationDocuments,
               vocabulary, crossValidationControversyScores, lambda, k, eta,
               trainingModel.beta, trainingModel.v, Purpose.CROSS_VALIDATION);
+          
+          Model testingModel = new Model(testingDocuments,
+              vocabulary, testingControversyScores, lambda, k, eta,
+              trainingModel.beta, trainingModel.v, Purpose.TESTING);
 
-          double rmse = crossValidationModel
+          double cvRmse = crossValidationModel
               .computeRmse(crossValidationControversyScores);
 
-          log("Predicted RMSE: " + rmse);
+          log("Predicted Cross Validation RMSE: " + cvRmse);
+          
+          double testingRmse = testingModel
+              .computeRmse(testingControversyScores);
 
-          if(SINGLE_RUN)
-            return;
+          log("Predicted Testing RMSE: " + testingRmse);
         }
       }
     }
+    
+    log("Completed experiments");
   }
 
   private void calculateTotalWordCount()

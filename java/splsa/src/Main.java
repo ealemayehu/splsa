@@ -28,6 +28,9 @@ public class Main
     options.addOption("createModelDatasets",
         "Creates the dataset used by this model and SLDA");
     options.addOption("runModel", "Runs the model.");
+    options.addOption("k", true, "Comma separated list of K values with no space in between them");
+    options.addOption("lambda", true, "Comma separated list of lambda values with no space in between them");
+    options.addOption("eta", true, "Comma separated list of eta values with no space in between them");
 
     CommandLineParser parser = new DefaultParser();
     CommandLine line = parser.parse(options, args);
@@ -59,11 +62,48 @@ public class Main
 
     if(all || line.hasOption("createModelDatasets"))
       DatasetPreparer.createModelDatasets();
+    
+    int[] kValues = null;
+    
+    if (line.hasOption("k"))
+      kValues = stringToInts(line.getOptionValue("k"));
+    
+    double[] lambdaValues = null;
+    
+    if (line.hasOption("lambda"))
+      lambdaValues = stringToDoubles(line.getOptionValue("lambda"));
+    
+    double[] etaValues = null;;
+    
+    if (line.hasOption("eta"))
+      etaValues = stringToDoubles(line.getOptionValue("eta"));
 
     if(all || line.hasOption("runModel"))
-      Model.run();
+      Model.run(kValues, lambdaValues, etaValues);
 
     if(line.hasOption("countAnalysisForBills"))
       Analysis.printAllCounts();
+  }
+  
+  private static double[] stringToDoubles(String commaSeparatedValues) {
+    String[] stringValues = commaSeparatedValues.split("\\,");
+    double[] doubleValues = new double[stringValues.length];
+    
+    for (int i = 0; i < stringValues.length; i++) {
+      doubleValues[i] = Double.parseDouble(stringValues[i]);
+    }
+    
+    return doubleValues;
+  }
+  
+  private static int[] stringToInts(String commaSeparatedValues) {
+    String[] stringValues = commaSeparatedValues.split("\\,");
+    int[] intValues = new int[stringValues.length];
+    
+    for (int i = 0; i < stringValues.length; i++) {
+      intValues[i] = Integer.parseInt(stringValues[i]);
+    }
+    
+    return intValues;
   }
 }
